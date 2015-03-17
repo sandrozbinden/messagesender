@@ -7,9 +7,9 @@ import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sandrozbinden.foldit.categories.DevelopmentManually;
 import com.sandrozbinden.messagesender.FolditUser;
 import com.sandrozbinden.messagesender.FolditUserLoader;
+import com.sandrozbinden.messagesender.categories.DevelopmentManually;
 
 public class FolditUserLoaderTest {
 
