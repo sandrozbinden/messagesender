@@ -1,27 +1,33 @@
 package com.sandrozbinden.messagesender;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Application {
 
-	private void sendMessages() {
-		try {
-			FolditMessageSender folditMessageSender = new FolditMessageSender();
-			folditMessageSender.start();
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-			EternaMessageSender eternaMessageSender = new EternaMessageSender();
-			eternaMessageSender.start();
-			
-			folditMessageSender.join();
-			eternaMessageSender.join();
-			
-		} catch (InterruptedException e) {
-			throw new IllegalStateException("Can't finish message send execution", e);
-		}
-	}
+    private void sendMessages() {
+        try {
+            FolditMessageSender folditMessageSender = new FolditMessageSender();
+            folditMessageSender.start();
 
-	public static void main(String[] args) {
-		Application application = new Application();
-		application.sendMessages();
-	}
+            EternaMessageSender eternaMessageSender = new EternaMessageSender();
+            eternaMessageSender.start();
+
+            folditMessageSender.join();
+            eternaMessageSender.join();
+
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Can't finish message send execution", e);
+        } catch (RuntimeException e) {
+            logger.error("Programm terminated with: " + e.getMessage(), e);
+        }
+    }
+
+    public static void main(String[] args) {
+        Application application = new Application();
+        application.sendMessages();
+    }
 
 }
