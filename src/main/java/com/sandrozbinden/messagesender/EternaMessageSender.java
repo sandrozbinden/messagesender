@@ -30,20 +30,21 @@ public class EternaMessageSender extends Thread {
                 logger.info("Skipping eterna  user: " + eternaUser.getUserName() + " this has already been processed");
             } else {
                 logger.info("Sending eterna message number: " + messagesSend + " to user: " + eternaUser.getUserName());
-                sendMessage(message.getMessage(eternaUser.getUserName()), eternaUser, eternaLogin.getSessionID());
-                processedEternaUser.add(eternaUser);
-                try {
-                    sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());
-                } catch (InterruptedException e) {
-                    throw new IllegalStateException("Can't wait after sending a message", e);
+                if (sendMessage(message.getMessage(eternaUser.getUserName()), eternaUser, eternaLogin.getSessionID())) {
+                    processedEternaUser.add(eternaUser);
+                    try {
+                        sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());
+                    } catch (InterruptedException e) {
+                        throw new IllegalStateException("Can't wait after sending a message", e);
+                    }
+                    messagesSend = messagesSend + 1;
                 }
-                messagesSend = messagesSend + 1;
             }
 
         }
     }
 
-    public void sendMessage(String message, EternaUser user, String sessionID) {
+    public boolean sendMessage(String message, EternaUser user, String sessionID) {
         try {
             String playerURL = Eterna.BASE_PLAYER_URL + "/" + user.getId() + "/";
             Response playerResponse = Jsoup.connect(playerURL).cookie(EternaLogin.COOKIE_SESSION_NAME, sessionID).timeout(20000).execute();
@@ -60,10 +61,11 @@ public class EternaMessageSender extends Thread {
             JSONObject data = (JSONObject) restResponse.get("data");
             if ((Boolean) data.get("success")) {
                 logger.debug(response.parse().toString());
+                return true;
             } else {
                 String error = "Could't send a message to eterna user: " + user.getUserName() + " response: " + response.parse().toString();
                 logger.error(error);
-                throw new IllegalStateException(error);
+                return false;
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -28,19 +28,20 @@ public class FolditMessageSender extends Thread {
                 logger.info("Skipping foldit  user: " + folditUser.getUserName() + " this has already been processed");
             } else {
                 logger.info("Sending foldit message number: " + messagesSend + " to user: " + folditUser.getUserName());
-                sendMessage(message.getMessage(folditUser.getUserName()), folditUser, folditLogin.getSessionID());
-                processedFolditUser.add(folditUser);
-                try {
-                    sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());
-                } catch (InterruptedException e) {
-                    throw new IllegalStateException("Can't wait after sending a message", e);
+                if (sendMessage(message.getMessage(folditUser.getUserName()), folditUser, folditLogin.getSessionID())) {
+                    processedFolditUser.add(folditUser);
+                    try {
+                        sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());
+                    } catch (InterruptedException e) {
+                        throw new IllegalStateException("Can't wait after sending a message", e);
+                    }
+                    messagesSend = messagesSend + 1;
                 }
-                messagesSend = messagesSend + 1;
             }
         }
     }
 
-    public void sendMessage(String message, FolditUser user, String sessionID) {
+    public boolean sendMessage(String message, FolditUser user, String sessionID) {
         try {
             Response newMessageResponse = Jsoup.connect(Foldit.BASE_NEW_MESSAGE_URL + "/" + user.getId()).cookie(FolditLogin.COOKIE_SESSION_NAME, sessionID)
                     .cookie("has_js", "1").execute();
@@ -60,10 +61,11 @@ public class FolditMessageSender extends Thread {
             Document responseDocument = response.parse();
             if (responseDocument.select("div.messages.status").text().contains("A message has been sent")) {
                 logger.debug(responseDocument.toString());
+                return true;
             } else {
                 String error = "Could't send a message to foldit user: " + user.getUserName() + " response: " + responseDocument.toString();
                 logger.error(error);
-                throw new IllegalStateException(error);
+                return false;
             }
         } catch (IOException e) {
             throw new IllegalStateException("Can't write message", e);
