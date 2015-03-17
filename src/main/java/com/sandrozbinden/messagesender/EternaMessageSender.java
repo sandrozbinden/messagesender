@@ -30,7 +30,7 @@ public class EternaMessageSender extends Thread {
                 logger.info("Skipping eterna  user: " + eternaUser.getUserName() + " this has already been processed");
             } else {
                 logger.info("Sending eterna message number: " + messagesSend + " to user: " + eternaUser.getUserName());
-                //            	sendMessage(message.getMessage(eternaUser.getUserName()), eternaUser, eternaLogin.getSessionID());
+                sendMessage(message.getMessage(eternaUser.getUserName()), eternaUser, eternaLogin.getSessionID());
                 processedEternaUser.add(eternaUser);
                 try {
                     sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());

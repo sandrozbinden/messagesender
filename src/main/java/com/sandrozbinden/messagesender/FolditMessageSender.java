@@ -28,8 +28,7 @@ public class FolditMessageSender extends Thread {
                 logger.info("Skipping foldit  user: " + folditUser.getUserName() + " this has already been processed");
             } else {
                 logger.info("Sending foldit message number: " + messagesSend + " to user: " + folditUser.getUserName());
-                // sendMessage(message.getMessage(folditUser.getUserName()),
-                // folditUser, folditLogin.getSessionID());
+                sendMessage(message.getMessage(folditUser.getUserName()), folditUser, folditLogin.getSessionID());
                 processedFolditUser.add(folditUser);
                 try {
                     sleep(Setting.getInstance().getFolditMessageRequestSleepInMS());
