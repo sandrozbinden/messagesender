@@ -10,6 +10,7 @@ public class Setting {
 
     private static final Setting instance = new Setting();
     private Properties settings;
+    public static final String FILE_NAME = "settings.properties";
 
     private Setting() {
         settings = new Properties();
@@ -23,7 +24,7 @@ public class Setting {
     }
 
     public File getFile() {
-        return ConfigDirectoy.getFile("settings.properties");
+        return ConfigDirectoy.getFile(FILE_NAME);
     }
 
     public static Setting getInstance() {
@@ -40,6 +41,10 @@ public class Setting {
 
     public String getFolditPassword() {
         return getProperty("foldit.password");
+    }
+
+    public boolean isFolditEnabled() {
+        return Boolean.parseBoolean(getProperty("foldit.enabled"));
     }
 
     public String getEternaUsername() {
@@ -84,5 +89,9 @@ public class Setting {
 
     public int getEternaMessageReuqestSleepInMS() {
         return Integer.valueOf(getProperty("eterna.message.request.sleepInMS"));
+    }
+
+    public boolean isEternaEnabled() {
+        return Boolean.parseBoolean(getProperty("eterna.enabled"));
     }
 }
