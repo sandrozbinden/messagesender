@@ -63,8 +63,8 @@ public class FolditMessageSender extends Thread {
                 logger.debug(responseDocument.toString());
                 return true;
             } else {
-                String error = "Could't send a message to foldit user: " + user.getUserName() + " response: " + responseDocument.toString();
-                logger.error(error);
+                logger.error("Could't send a message to foldit user: " + user.getUserName());
+                logger.debug(" response: " + responseDocument.toString());
                 return false;
             }
         } catch (IOException e) {

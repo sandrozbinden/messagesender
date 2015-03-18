@@ -63,8 +63,8 @@ public class EternaMessageSender extends Thread {
                 logger.debug(response.parse().toString());
                 return true;
             } else {
-                String error = "Could't send a message to eterna user: " + user.getUserName() + " response: " + response.parse().toString();
-                logger.error(error);
+                logger.error("Could't send a message to eterna user: " + user.getUserName());
+                logger.debug(" response: " + response.parse().toString());
                 return false;
             }
         } catch (IOException e) {
